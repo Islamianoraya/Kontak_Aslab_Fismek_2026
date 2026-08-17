@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Asisten Laboratorium</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts & FontAwesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        navy: {
+                            DEFAULT: '#1e5395',
+                            dark: '#123766',
+                        },
+                        accent: {
+                            yellow: '#f5b014',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html, body {
+            height: 100%;
+            overflow-x: hidden;
+        }
+        body {
+            background-color: #1e5395;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(245, 176, 20, 0.15) 0%, transparent 20%);
+            background-attachment: fixed;
+        }
+        /* Custom Scrollbar */
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 8px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 8px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 antialiased pb-6 flex flex-col">
+
+    <!-- Header / Navbar -->
+    <header class="bg-navy-dark text-white border-b-4 border-accent-yellow shadow-md mb-4 sticky top-0 z-50">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="bg-accent-yellow text-navy-dark rounded-lg flex items-center justify-center w-9 h-9 shadow-sm text-lg">
+                    <i class="fa-solid fa-microchip"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg md:text-xl tracking-wide uppercase leading-tight">
+                        PROMPT LAB FISDAS <span class="text-accent-yellow">ITS</span>
+                    </h1>
+                    <p class="text-xs text-blue-200">Kontak Asisten & Praktikum</p>
+                </div>
+            </div>
+
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 w-full flex-1 flex flex-col">
+        <!-- Card Container Utama -->
+        <div class="bg-white rounded-2xl p-4 sm:p-6 shadow-2xl border border-slate-100 flex flex-col h-[calc(100vh-120px)]">
+            
+            <!-- Filter & Search Bar -->
+            <div class="mb-4 space-y-3 shrink-0">
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-3 border-b border-slate-100 pb-4">
+                    <div>
+                        <h2 class="text-lg font-bold text-navy-dark flex items-center gap-2">
+                            <span class="w-2 h-5 bg-accent-yellow rounded-full inline-block"></span>
+                            Daftar Kontak Asisten Laboratorium Fisika Mekanika
+                        </h2>
+                        <p id="totalCounter" class="text-xs text-slate-500 mt-0.5">Memuat kontak...</p>
+                    </div>
+                    <!-- Input Search -->
+                    <div class="relative w-full sm:w-72">
+                        <input id="searchInput" type="text" placeholder="Cari nama atau nomor..." 
+                            class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-navy focus:border-transparent transition-all" 
+                            oninput="filterAslab()" />
+                        <svg class="w-4 h-4 text-slate-400 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Container Scroll untuk Data -->
+            <div id="aslabList" class="space-y-3 overflow-y-auto pr-2 custom-scroll flex-1">
+                <!-- Data akan dimasukkan secara otomatis oleh JavaScript -->
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Array lengkap 159 kontak
+        const dataAslab = [
+            { nama: "Safira Azaria Putrid", nomor: "628113555653" },
+            { nama: "Khairunnisa Afiqah Riza", nomor: "6281270967270" },
+            { nama: "Muhammad Jofanda Ahsananjaya", nomor: "6285607418389" },
+            { nama: "Muhammad Firhan Maliq Abraar", nomor: "6281939842363" },
+            { nama: "Farel Putra Handoko", nomor: "6287785533102" },
+            { nama: "Roshelly Anggita Ramadhani", nomor: "6282125067649" },
+            { nama: "Siti Aisyah", nomor: "6287772213344" },
+            { nama: "Karissya Zaliva Melani", nomor: "6282280601690" },
+            { nama: "Fadhli Naufal Novanto", nomor: "6285280658885" },
+            { nama: "Agnes Natasya Rency Aulia Putri", nomor: "6281233560148" },
+            { nama: "Ishmah Fahrunnada Nurdini", nomor: "6281586024257" },
+            { nama: "Rachel Amelia Putri Lumban Gaol", nomor: "6285248897160" },
+            { nama: "Ayu Putri Nuraini", nomor: "62895330302470" },
+            { nama: "Mahameru Gahzy Bintang Manggala", nomor: "6287853335789" },
+            { nama: "Nabil Faiz Ghathfan", nomor: "6282186579959" },
+            { nama: "Pradhipa Anggara Kusuma", nomor: "6281216828536" },
+            { nama: "Fakhri Ahmad Yawmil Adha Aschafitz", nomor: "6287786920600" },
+            { nama: "Maulidina Rahma Azaria", nomor: "6285733801322" },
+            { nama: "Nurus Shafa Ardhana Nareswari", nomor: "6285733196994" },
+            { nama: "Mufidatul Amaliyah Asyifa'", nomor: "62895702852030" },
+            { nama: "Novita Salsabila", nomor: "6289678867637" },
+            { nama: "Fajar Faizal", nomor: "6285233390400" },
+            { nama: "M. Syafa Amrullah Chaq", nomor: "62895612260602" },
+            { nama: "Abqari Althof Wianda Putra", nomor: "6282282693272" },
+            { nama: "Ahmad Azka Fu'Adi", nomor: "6285850555363" },
+            { nama: "Layla Wahyu Agustina", nomor: "6285834336899" },
+            { nama: "Syifa Amelia Widyaningrum", nomor: "6281325700827" },
+            { nama: "Insan Aulia' Wijaya", nomor: "6285335934664" },
+            { nama: "Jehan Sevira Assyach", nomor: "6282353385679" },
+            { nama: "Iqbal Albani Ikhsan", nomor: "62895638023378" },
+            { nama: "Alva Arifuddin", nomor: "6285812523063" },
+            { nama: "Rasyid Lucky Budiman", nomor: "6288271823967" },
+            { nama: "Muhammad Wafi Asripa Athaillah", nomor: "6282272037770" },
+            { nama: "Denisa Maufiqul Azizah", nomor: "6285177475105" },
+            { nama: "Christian Abetnego Tumangger", nomor: "6285220296122" },
+            { nama: "Nabila Dhariifah Santoso", nomor: "6282325137595" },
+            { nama: "Aidil Praditya Oktavianto", nomor: "6285648573763" },
+            { nama: "Farado Pratama", nomor: "6282244629057" },
+            { nama: "Aleisha Zhafira Zuchrufila", nomor: "6282132872928" },
+            { nama: "Timothy Evan Chrissaputra", nomor: "6285747261593" },
+            { nama: "Ariena Carienata Haque", nomor: "6281216695684" },
+            { nama: "Fatih Azzam Robbani", nomor: "6281910055686" },
+            { nama: "Nona Nindya Nabila", nomor: "6287817421689" },
+            { nama: "I Wayan Pandu Atmaja", nomor: "6282147585227" },
+            { nama: "Balghiansyah Fatahillah", nomor: "6285126762724" },
+            { nama: "Olivia Natalie Hermawan", nomor: "6285802781200" },
+            { nama: "Mohammad Farhan Alwanul Faizin", nomor: "62881037591770" },
+            { nama: "Amanda Erly Suwito", nomor: "6281529564165" },
+            { nama: "Fasha Raisiya Feresyte", nomor: "6282143227701" },
+            { nama: "Darylina Maurinne Parama Fradana", nomor: "6285726572457" },
+            { nama: "Veronika Putri Gantari", nomor: "6281917721229" },
+            { nama: "Hubba Althuf Salsabila", nomor: "6285932902751" },
+            { nama: "Alviani Zelda", nomor: "6285895999521" },
+            { nama: "Alexandra Haruko Shatara", nomor: "6282324031570" },
+            { nama: "Teresia Pasha", nomor: "6281211715543" },
+            { nama: "Puan Naraiswari Chandrasekhara", nomor: "6287828032954" },
+            { nama: "Cirillo Darlene Lawolo", nomor: "6282274655482" },
+            { nama: "Rahel C.F. Simatupang", nomor: "6288802146358" },
+            { nama: "Monic Arindra Darmayanti", nomor: "6289522694797" },
+            { nama: "Laily Cahya Febriantina", nomor: "6282145971037" },
+            { nama: "Mochamad Lathif", nomor: "6281259582838" },
+            { nama: "Muhammad Yasril Ijtihadi Akbar", nomor: "6281393310226" },
+            { nama: "Qonita Naura Izzati", nomor: "6285604923813" },
+            { nama: "Diana Intan Fatimah", nomor: "6282237214106" },
+            { nama: "Alya Cinta Kirana Cipta", nomor: "6285770130747" },
+            { nama: "Ronald Naufal Putra Susanto", nomor: "628135742726" },
+            { nama: "Nazarisva Azzahra", nomor: "6288215374616" },
+            { nama: "Revanza Farhan Athallah Rizky", nomor: "6287721894031" },
+            { nama: "Aburizal Nuraulia Ikhsan", nomor: "6281331416421" },
+            { nama: "Arya Pramudhita Mujiono", nomor: "-" },
+            { nama: "Muhammad Raffi Akbar", nomor: "6285156839379" },
+            { nama: "Frista Hezline", nomor: "6281315452582" },
+            { nama: "Muhamad Irfan Hidayatullah", nomor: "62895635107144" },
+            { nama: "Wahyu Ramadhan", nomor: "6285834305224" },
+            { nama: "Muhammad Ilman Nafi'An", nomor: "6285608017260" },
+            { nama: "Naura Hanifah Nabiha", nomor: "62881024391674" },
+            { nama: "Muchammad Baidhawi Muslich", nomor: "6281545865105" },
+            { nama: "Rafli Darma Kuswandi", nomor: "6289512888455" },
+            { nama: "Tri Wahyu Prasetyo", nomor: "6282332972930" },
+            { nama: "Rafi Taiviqul Hakim", nomor: "6285960392614" },
+            { nama: "Raisa Sana Ayesha Sukma", nomor: "6282140987003" },
+            { nama: "Faisha Ahza Ilham Sulistyo", nomor: "6288231001173" },
+            { nama: "Farida Wafiq Azizah", nomor: "6282245585782" },
+            { nama: "Oriza Sativa", nomor: "6283830099378" },
+            { nama: "Audynajila Avrilisha Robuso", nomor: "6281314737660" },
+            { nama: "Rif'At Aaqil Abiyyi", nomor: "6282220042486" },
+            { nama: "Zahra Niota Putri", nomor: "6282234849211" },
+            { nama: "Muhammad Luthfi Akbar", nomor: "6285875566443" },
+            { nama: "Khairun Nisa", nomor: "62895411916833" },
+            { nama: "Krisnawati", nomor: "6285606363676" },
+            { nama: "Adea Zahwa", nomor: "6287854313934" },
+            { nama: "Salsabilla Rahmania", nomor: "62812235698413" },
+            { nama: "Alia Zahrah", nomor: "6281297961828" },
+            { nama: "Muhammad Naufal Farrasy", nomor: "6282195484082" },
+            { nama: "Alvin Zulfafa", nomor: "6281952472148" },
+            { nama: "Silvany Dhea Evelynawati", nomor: "6282213175445" },
+            { nama: "Jadid Rafif Murtadho", nomor: "6281212169322" },
+            { nama: "Muhammad Rayhan Dewa Saputra", nomor: "628567085408" },
+            { nama: "Berwyn", nomor: "628127725555" },
+            { nama: "Ahmad Satrio Wicaksono", nomor: "6285648135767" },
+            { nama: "Justin Christopher", nomor: "6282262311525" },
+            { nama: "Kyara Aprilinda Otoluwa", nomor: "6281252541772" },
+            { nama: "Yefi Ragelia Marshadani", nomor: "6289601909140" },
+            { nama: "Farrazetha Yogo Swara", nomor: "6282258112227" },
+            { nama: "Rosa Shibahatun Nadhifah", nomor: "6285859612398" },
+            { nama: "Livynia Khaira Anastacia Dacosta", nomor: "6281450390182" },
+            { nama: "Naila Naziha Putri Bayu", nomor: "6285731051551" },
+            { nama: "Fabian Lucky Ariansyah", nomor: "6281330038707" },
+            { nama: "Nadin Agistina", nomor: "62882022716777" },
+            { nama: "Nella Dewi Sekartaji", nomor: "6281251314814" },
+            { nama: "Fajar Yuandika", nomor: "6281335704209" },
+            { nama: "Ruth Sevenia Hutabarat", nomor: "62895383312700" },
+            { nama: "Icha Trechia Lady", nomor: "6289678671987" },
+            { nama: "Amelia Berliana Cleveraputri", nomor: "6282131527681" },
+            { nama: "Elok Rizqiah", nomor: "6285732247131" },
+            { nama: "Lohita Anuum Rustam", nomor: "6289516532617" },
+            { nama: "Berlian Sin Arif Billa", nomor: "6285654485724" },
+            { nama: "Daffa Naufal Islamy Prasetya", nomor: "6282142195373" },
+            { nama: "Femia Dwiyanti", nomor: "6285230160834" },
+            { nama: "Ayu Nisa Aprilia", nomor: "6285694029635" },
+            { nama: "Siti Nur Fadilah", nomor: "6281217682827" },
+            { nama: "Sherlyn Margaretha Rahardjo", nomor: "628990389900" },
+            { nama: "Ahmad Hadafi", nomor: "6289687753327" },
+            { nama: "Enzellina Zuhrotul A.", nomor: "6285736731924" },
+            { nama: "Kevin Nathanael Nugroho", nomor: "628979878989" },
+            { nama: "Saifullah Hammam Karim", nomor: "6285601997339" },
+            { nama: "Azka Hasby Hanafi", nomor: "6285798363898" },
+            { nama: "Ksatria Witjak Nugraha", nomor: "6281296636313" },
+            { nama: "Muhammad Hajj Jenar Radith Halim", nomor: "6282114840140" },
+            { nama: "Almira Jasmin Pramono Putri", nomor: "6281527139734" },
+            { nama: "I Made Prana", nomor: "6287701837878" },
+            { nama: "Zaidan Fayyadh Sulaeman", nomor: "6282115099962" },
+            { nama: "Bima Prakasa Setiawanda", nomor: "6288802023292" },
+            { nama: "Ivonne Keiko Febriyanti Siagian", nomor: "6281536965040" },
+            { nama: "Maria Innacensia Senja Diani", nomor: "6287854526899" },
+            { nama: "Nelvan Ilhamsyah", nomor: "6283846675454" },
+            { nama: "Muhammad Andhika", nomor: "6281357557737" },
+            { nama: "Jasmine Luisa Angesti", nomor: "6282214477771" },
+            { nama: "Gabriella Angeline Romauli Tampubolon", nomor: "628997183104" },
+            { nama: "Maitsa Tsuroyya Muntazh", nomor: "6285730370825" },
+            { nama: "Safira Nezha Aulia", nomor: "6282241115484" },
+            { nama: "Dava Ferdiansyah", nomor: "6287831564135" },
+            { nama: "Haidar Ali Al Jawad", nomor: "6281358505448" },
+            { nama: "Ashilah Mahirah Mumtaz", nomor: "6285247287455" },
+            { nama: "Alfaathir Alghaniy Prasetiyo", nomor: "6281232677444" },
+            { nama: "Fauziyah Kartika Pramesti", nomor: "6283850210136" },
+            { nama: "Muhammad Daffa Adiel Ramadhan", nomor: "6287849082006" },
+            { nama: "Livia Nathania Ramadhani", nomor: "6281332918920" },
+            { nama: "Gavin Danadyaksa", nomor: "6281225298163" },
+            { nama: "Muhammad Qolbi Imansyah", nomor: "628123096779" },
+            { nama: "Rivandy Andriyo", nomor: "62881027316943" },
+            { nama: "Klara Pratita Maitri", nomor: "6282322061606" },
+            { nama: "Ghaniyyah A’ida Fathma", nomor: "6287810712324" },
+            { nama: "Abdel Rafe Alem", nomor: "6283867033289" },
+            { nama: "Nasya Indira Khairunnisa", nomor: "6282142534473" },
+            { nama: "Muhammad Nabil", nomor: "6281364867825" },
+            { nama: "Mohammad Sholeh Hasan", nomor: "6281332704727" },
+            { nama: "Jesslyn Gunawan", nomor: "6288235903299" },
+            { nama: "Amanda Delila Putri Ardinata", nomor: "6285336214234" }
+        ];
+
+        // Fungsi Render Card
+        function renderCards(list) {
+            const container = document.getElementById('aslabList');
+            const counter = document.getElementById('totalCounter');
+            
+            container.innerHTML = '';
+            counter.innerText = `Menampilkan ${list.length} dari ${dataAslab.length} kontak`;
+
+            if (list.length === 0) {
+                container.innerHTML = `<div class="text-center text-slate-400 py-8 text-sm">Tidak ada kontak yang ditemukan</div>`;
+                return;
+            }
+
+            list.forEach(aslab => {
+                const hasNumber = aslab.nomor && aslab.nomor !== '-';
+                const actionButton = hasNumber 
+                    ? `<a href="https://wa.me/${aslab.nomor}" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-4 py-2 rounded-xl text-xs sm:text-sm shadow-sm transition-colors flex items-center gap-1.5">Chat</a>`
+                    : `<span class="bg-slate-200 text-slate-400 font-semibold px-4 py-2 rounded-xl text-xs sm:text-sm cursor-not-allowed">Tidak Ada No</span>`;
+
+                const card = document.createElement('div');
+                card.className = "aslab-card bg-slate-50 hover:bg-slate-100/80 rounded-xl p-4 flex justify-between items-center border border-slate-200/60 transition-all";
+                card.innerHTML = `
+                    <div class="pr-2">
+                        <div class="font-bold text-slate-900 nama">${aslab.nama}</div>
+                        <div class="text-xs text-slate-500 font-medium mt-0.5 nomor">${hasNumber ? '+' + aslab.nomor : 'Tanpa Kontak'}</div>
+                    </div>
+                    ${actionButton}
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Fungsi Filter Pencarian
+        function filterAslab() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = dataAslab.filter(item => 
+                item.nama.toLowerCase().includes(query) || 
+                item.nomor.includes(query)
+            );
+            renderCards(filtered);
+        }
+
+        // Render awal saat dokumen siap
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCards(dataAslab);
+        });
+    </script>
+</body>
+</html>
