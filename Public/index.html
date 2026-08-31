@@ -9,7 +9,7 @@
     <!-- Google Fonts & FontAwesome -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <script>
         tailwind.config = {
             theme: {
@@ -37,7 +37,7 @@
         }
         body {
             background-color: #1e5395;
-            background-image: 
+            background-image:
                 radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 20%),
                 radial-gradient(circle at 90% 80%, rgba(245, 176, 20, 0.15) 0%, transparent 20%);
             background-attachment: fixed;
@@ -82,7 +82,7 @@
     <main class="max-w-4xl mx-auto px-4 w-full flex-1 flex flex-col">
         <!-- Card Container Utama -->
         <div class="bg-white rounded-2xl p-4 sm:p-6 shadow-2xl border border-slate-100 flex flex-col h-[calc(100vh-120px)]">
-            
+
             <!-- Filter & Search Bar -->
             <div class="mb-4 space-y-3 shrink-0">
                 <div class="flex flex-col sm:flex-row items-center justify-between gap-3 border-b border-slate-100 pb-4">
@@ -95,9 +95,9 @@
                     </div>
                     <!-- Input Search -->
                     <div class="relative w-full sm:w-72">
-                        <input id="searchInput" type="text" placeholder="Cari nama atau nomor..." 
-                            class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-navy focus:border-transparent transition-all" 
-                            oninput="filterAslab()" />
+                        <input id="searchInput" type="text" placeholder="Cari nama atau nomor..."
+                             class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-navy focus:border-transparent transition-all"
+                             oninput="filterAslab()" />
                         <svg class="w-4 h-4 text-slate-400 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
@@ -113,8 +113,19 @@
     </main>
 
     <script>
-        // Array lengkap 159 kontak
-        const dataAslab = [
+        // Koordinator - selalu tampil di paling atas
+        const dataKoordinator = [
+            { nama: "Raya Islami Putra Atmaja", nomor: "6285175383590", jabatan: "Koordinator" },
+            { nama: "Eksilistya Kartika Rizki Dayinta", nomor: "6281252551116", jabatan: "Koordinator" },
+            { nama: "Hafshah Wafa Syahida", nomor: "6288213282699", jabatan: "Koordinator" },
+            { nama: "Veby Karunia Sihombing", nomor: "6282333010978", jabatan: "Koordinator" },
+            { nama: "Mochammad Reyza Taufiqurakhman", nomor: "6281283042476", jabatan: "Koordinator" },
+            { nama: "Dimas Alvin Apriyanto", nomor: "6281238714011", jabatan: "Koordinator" },
+            { nama: "Sephiananta Fatimatus Sya'baniyah", nomor: "6285890215525", jabatan: "Koordinator" },
+        ];
+
+        // Array lengkap kontak aslab
+        const dataAslabReguler = [
             { nama: "Safira Azaria Putrid", nomor: "628113555653" },
             { nama: "Khairunnisa Afiqah Riza", nomor: "6281270967270" },
             { nama: "Muhammad Jofanda Ahsananjaya", nomor: "6285607418389" },
@@ -267,7 +278,7 @@
             { nama: "Muhammad Qolbi Imansyah", nomor: "628123096779" },
             { nama: "Rivandy Andriyo", nomor: "62881027316943" },
             { nama: "Klara Pratita Maitri", nomor: "6282322061606" },
-            { nama: "Ghaniyyah A’ida Fathma", nomor: "6287810712324" },
+            { nama: "Ghaniyyah A'ida Fathma", nomor: "6287810712324" },
             { nama: "Abdel Rafe Alem", nomor: "6283867033289" },
             { nama: "Nasya Indira Khairunnisa", nomor: "6282142534473" },
             { nama: "Muhammad Nabil", nomor: "6281364867825" },
@@ -276,11 +287,14 @@
             { nama: "Amanda Delila Putri Ardinata", nomor: "6285336214234" }
         ];
 
+        // Gabungkan: koordinator selalu di paling atas
+        const dataAslab = [...dataKoordinator, ...dataAslabReguler];
+
         // Fungsi Render Card
         function renderCards(list) {
             const container = document.getElementById('aslabList');
             const counter = document.getElementById('totalCounter');
-            
+
             container.innerHTML = '';
             counter.innerText = `Menampilkan ${list.length} dari ${dataAslab.length} kontak`;
 
@@ -291,15 +305,24 @@
 
             list.forEach(aslab => {
                 const hasNumber = aslab.nomor && aslab.nomor !== '-';
-                const actionButton = hasNumber 
+                const actionButton = hasNumber
                     ? `<a href="https://wa.me/${aslab.nomor}" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-4 py-2 rounded-xl text-xs sm:text-sm shadow-sm transition-colors flex items-center gap-1.5">Chat</a>`
                     : `<span class="bg-slate-200 text-slate-400 font-semibold px-4 py-2 rounded-xl text-xs sm:text-sm cursor-not-allowed">Tidak Ada No</span>`;
 
+                const isCoordinator = aslab.jabatan === "Koordinator";
+                const badge = isCoordinator
+                    ? `<span class="ml-2 inline-block bg-accent-yellow text-navy-dark text-[10px] font-bold px-2 py-0.5 rounded-full align-middle">KOORDINATOR</span>`
+                    : '';
+
                 const card = document.createElement('div');
-                card.className = "aslab-card bg-slate-50 hover:bg-slate-100/80 rounded-xl p-4 flex justify-between items-center border border-slate-200/60 transition-all";
+                card.className = `aslab-card rounded-xl p-4 flex justify-between items-center border transition-all ${
+                    isCoordinator
+                        ? 'bg-amber-50 hover:bg-amber-100/80 border-accent-yellow/60'
+                        : 'bg-slate-50 hover:bg-slate-100/80 border-slate-200/60'
+                }`;
                 card.innerHTML = `
                     <div class="pr-2">
-                        <div class="font-bold text-slate-900 nama">${aslab.nama}</div>
+                        <div class="font-bold text-slate-900 nama">${aslab.nama}${badge}</div>
                         <div class="text-xs text-slate-500 font-medium mt-0.5 nomor">${hasNumber ? '+' + aslab.nomor : 'Tanpa Kontak'}</div>
                     </div>
                     ${actionButton}
@@ -311,8 +334,8 @@
         // Fungsi Filter Pencarian
         function filterAslab() {
             const query = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = dataAslab.filter(item => 
-                item.nama.toLowerCase().includes(query) || 
+            const filtered = dataAslab.filter(item =>
+                item.nama.toLowerCase().includes(query) ||
                 item.nomor.includes(query)
             );
             renderCards(filtered);
